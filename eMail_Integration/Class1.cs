@@ -49,8 +49,18 @@ namespace eMail_Integration
             var mimeContent = email.MimeContent;
             Regex rgx = new Regex("[^a-zA-Z0-9 ]");
             string emailPath = "";
+            string emailfilename = "";
 
-            string emailfilename = rgx.Replace(message.Subject.ToString(), "");
+            if (message.Subject is null)
+            {
+                emailfilename = "NoSubject";
+            }
+            else
+            {
+                emailfilename = rgx.Replace(message.Subject.ToString(), "");
+            }
+
+
 
             if ((AttachmentSavePath.Length + emailfilename.Length - 250) >= 0)
             {
@@ -120,13 +130,12 @@ namespace eMail_Integration
                         }
                         string extension = "";
                         string filename = "";
+                        Regex rgx = new Regex("[^a-zA-Z0-9 .]");
                         if (attachment is ItemAttachment)
                         {
                             ItemAttachment fileAttachment = attachment as ItemAttachment;
                             extension = ".eml";
                             filename = fileAttachment.Name.ToString();
-                            Regex rgx = new Regex("[^a-zA-Z0-9 ]");
-
 
                             filename = rgx.Replace(filename, "");
                             filename = filename + extension;
@@ -135,6 +144,7 @@ namespace eMail_Integration
                         {
                             FileAttachment fileAttachment = attachment as FileAttachment;
                             filename = fileAttachment.Name.ToString();
+                            filename = rgx.Replace(filename, "");
                             extension = Path.GetExtension(filename);
                         }
 
@@ -597,12 +607,13 @@ namespace eMail_Integration
                             continue;
                         }
 
-
-                        if ((EmailSubject.Any(message.Subject.Contains) == false) && EmailSubject[0] != "")
+                        if (message.Subject != null)
                         {
-                            continue;
+                            if ((EmailSubject.Any(message.Subject.Contains) == false) && EmailSubject[0] != "")
+                            {
+                                continue;
+                            }
                         }
-
                         if (message.Body.Text != null)
                         {
 
@@ -637,7 +648,17 @@ namespace eMail_Integration
                         }
 
                         senderAddress = message.Sender.Address;
-                        emailSubject = message.Subject;
+
+                        if (message.Subject is null)
+                        {
+                            emailSubject = "NoSubject";
+                        }
+                        else
+                        {
+                            emailSubject = message.Subject;
+                        }
+                        
+
                         emailBody = message.Body.Text;
                         datereceived = message.DateTimeReceived.ToString();
 
@@ -763,10 +784,12 @@ namespace eMail_Integration
                             continue;
                         }
 
-
-                        if ((EmailSubject.Any(message.Subject.Contains) == false) && EmailSubject[0] != "")
+                        if (message.Subject != null)
                         {
-                            continue;
+                            if ((EmailSubject.Any(message.Subject.Contains) == false) && EmailSubject[0] != "")
+                            {
+                                continue;
+                            }
                         }
 
                         if (message.Body.Text != null)
@@ -801,7 +824,16 @@ namespace eMail_Integration
                         }
 
                         senderAddress = message.Sender.Address;
-                        emailSubject = message.Subject;
+
+                        if (message.Subject is null)
+                        {
+                            emailSubject = "NoSubject";
+                        }
+                        else
+                        {
+                            emailSubject = message.Subject;
+                        }
+
                         emailBody = message.Body.Text;
                         datereceived = message.DateTimeReceived.ToString();
 
